@@ -69,9 +69,21 @@ meanEdgeLength = totalLength/Length[mesh["edges"]]
 
 ### Utility functions
 
-- `{x,f} = loadPolygonalOBJ[filename]` — This method loads a polygon mesh from a WavefrontOBJ file, returning vertex coordinates as a list `x` of triples, and polygons as a list `f` of faces, each of which is a list of 1-based indices into `x`.  Note that Mathematica's built-in mesh loaders do not provide the original OBJ connectivity, since they either (i) triangulate all polygons (e.g., `Import["mesh.obj"]`) or (ii) provide only a polygon soup (e.g., `Import["mesh.obj",PolygonData]`).
+The HalfedgeMesh package also defines several utility functions.  Note that, in order to keep function invocation concise, most of these functions assume the existence of a halfedge mesh named `mesh` (as built by `BuildHalfedge`), and that the element helper functions have the same names as above (`twin, next, vertex, edge, face, he`).  They also assume that there is a list of vertex coordinates named `vertexCoordinates` (as built by `loadPolygonalOBJ`).
 
-- `DrawHalfedgeMesh[]` — This method visualizes the mesh built by `BuildHalfedge`, assuming the mesh is named `mesh` and the helper functions have the same names as above (`twin, next, vertex, edge, face, he`).
+- `onBoundary[h]` — Returns a boolean indicating whether `h` is contained in the mesh boundary.
+
+- `position[v]` — Returns the coordinates of vertex `v`.  Note that, like the element helper functions, it is often convenient to call this function in a postfix fashion, e.g., `e//he//vertex//position` gets the position of one of the endpoints of edge `e`.
+
+- `DrawHalfedgeMesh[]` — Draws the mesh in 3D.  Note that this function has not been carefully calibrated to draw meshes of different sizes, and may draw very small (or very large) widgets for vertices, edges, etc.
+
+- `EdgeLength[e]` — Returns the length of edge `e`.
+
+- `TriangleArea[f]` — Returns the area of face `f`.  If `f` is a nonplanar polygon, returns the magnitude of the area vector (as computed by the shoelace formula).
+
+- `CornerAngle[h]` — Returns the interior angle at the head (not the tail) of halfedge h.
+
+- `{vertexCoordinates,polygons} = loadPolygonalOBJ[filename]` — This function loads a polygon mesh from a WavefrontOBJ file, returning vertex coordinates as a list `vertexCoordinates` of triples, and polygons as a list `polygons` of polygons, each of which is a list of 1-based indices into `vertexCoordinates`.  Note that Mathematica's built-in mesh loaders do not provide the original OBJ connectivity, since they either (i) triangulate all polygons (e.g., `Import["mesh.obj"]`) or (ii) provide only a polygon soup (e.g., `Import["mesh.obj",PolygonData]`).
 
 ### (Optional Reading) Internal representation
 

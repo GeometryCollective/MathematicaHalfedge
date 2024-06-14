@@ -74,6 +74,43 @@ mesh=Association[{
 Return[{mesh,twin,next,vertex,edge,face,he}]
 ];
 
+(* Returns true if and only if h is contained in the mesh boundary. *)
+onBoundary[h_]:=(h//twin)==-1;
+
+(* Returns the coordinates of vertex v *)
+position[v_]:=vertexCoordinates[[v[[2]]]];
+
+(* Returns the length of edge e *)
+EdgeLength[e_]:=Module[{p1,p2},
+p1=e//he//vertex//position;
+p2=e//he//next//vertex//position;
+Return[Norm[p2-p1]];
+];
+
+(* Returns the area of face f.  If f is a nonplanar polygon, returns the magnitude of the area vector (as computed by the shoelace formula.) *)
+FaceArea[f_]:=Module[{pi,pj,h,A},
+A=0;
+h=f//he;
+While[True,
+pi=h//vertex//position;
+pj=h//next//vertex//position;
+A+=Cross[pi,pj]/2;
+h=h//next;
+If[h==(f//he),Break[]];
+];
+Return[Norm[A]];
+];
+
+(* Returns the interior angle at the head (not the tail) of halfedge h *)
+CornerAngle[h_]:=Module[{p1,p2,p3,u,v},
+p1=h//vertex//position;
+p2=h//next//vertex//position;
+p3=h//next//next//vertex//position;
+u=p3-p2;
+v=p1-p2;
+Return[ArcTan[u . v,Norm[Cross[u,v]]]];
+];
+
 (* Draw halfedge mesh *)
 DrawHalfedgeMesh[]:=Module[{gVertices,gEdges,gBoundaryEdges,gFaces,gHalfedges,gBlue,v1,v2,h,gVerts,p1,p2,p3,t,n,m,l,u,q1,q2,gHalfedgeScale},
 (* Vertices *)
