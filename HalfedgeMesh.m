@@ -73,3 +73,81 @@ mesh=Association[{
 
 Return[{mesh,twin,next,vertex,edge,face,he}]
 ];
+
+(* Draw halfedge mesh *)
+DrawHalfedgeMesh[]:=Module[{gVertices,gEdges,gBoundaryEdges,gFaces,gHalfedges,gBlue,v1,v2,h,gVerts,p1,p2,p3,t,n,m,l,u,q1,q2,gHalfedgeScale},
+(* Vertices *)
+gVertices=Sphere[#,.02]&/@vertexCoordinates;
+
+(* Edges *)
+gEdges={};
+Do[
+h=e//he;
+If[!onBoundary[h],
+v1=h//vertex;
+v2=h//twin//vertex;
+AppendTo[gEdges,Tube[{v1//position,v2//position}]]
+],
+{e,mesh["edges"]}
+];
+
+(* Boundary Edges *)
+gBoundaryEdges={};
+Do[
+h=e//he;
+If[onBoundary[h],
+v1=h//vertex;
+v2=h//next//vertex;
+AppendTo[gBoundaryEdges,Tube[{v1//position,v2//position}]]
+],
+{e,mesh["edges"]}
+];
+
+(* Faces *)
+gFaces={};
+Do[
+h=f//he;
+gVerts={};
+While[True,
+AppendTo[gVerts,h//vertex//position];
+h=h//next;
+If[h==(f//he),Break[]];
+];
+AppendTo[gFaces,Polygon[gVerts]],
+{f,mesh["faces"]}
+];
+
+(* Halfedges *)
+gHalfedges={};
+gHalfedgeScale=.7;
+Do[
+(* get three consecutive points from this face *)
+p1=h//vertex//position;
+p2=h//next//vertex//position;
+p3=h//next//next//vertex//position;
+
+(* compute normal and tangent *)
+n=Cross[p3-p2,p1-p2]//Normalize;
+t=Cross[n,p2-p1]//Normalize;
+
+(* compute midpoint, length, and unit edge vector *)
+m=(p1+p2)/2;
+l=Norm[p2-p1];
+u=Normalize[p2-p1];
+
+(* endpoints of arrow *)
+q1=m+gHalfedgeScale l u/2+.03t;
+q2=m-gHalfedgeScale l u/2+.03t;
+AppendTo[gHalfedges,Arrow[Tube[{q1,q2},.005]]],
+{h,mesh["halfedges"]}
+];
+
+gBlue=RGBColor["#1b1f8a"];
+Graphics3D[{
+Darker[White,.7],gVertices,
+Lighter[gBlue,.6],gEdges,
+Darker[White,.7],gBoundaryEdges,
+Lighter[gBlue,.8],EdgeForm[],gFaces,
+White,Arrowheads[.02],gHalfedges
+},Boxed->False,Lighting->"ThreePoint"]
+];

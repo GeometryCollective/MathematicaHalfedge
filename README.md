@@ -69,7 +69,9 @@ meanEdgeLength = totalLength/Length[mesh["edges"]]
 
 ### Utility functions
 
-Since Mathematica's built-in mesh loaders either (i) triangulate all polygons (e.g., `Import["mesh.obj"]`) or (ii) provide only a polygon soup (e.g., `Import["mesh.obj",PolygonData]`), the notebook also provides a method `LoadPolygonalOBJ[filename]` that loads a general polygon mesh with proper connectivity.
+- `{x,f} = loadPolygonalOBJ[filename]` — This method loads a polygon mesh from a WavefrontOBJ file, returning vertex coordinates as a list `x` of triples, and polygons as a list `f` of faces, each of which is a list of 1-based indices into `x`.  Note that Mathematica's built-in mesh loaders do not provide the original OBJ connectivity, since they either (i) triangulate all polygons (e.g., `Import["mesh.obj"]`) or (ii) provide only a polygon soup (e.g., `Import["mesh.obj",PolygonData]`).
+
+- `DrawHalfedgeMesh[]` — This method visualizes the mesh built by `BuildHalfedge`, assuming the mesh is named `mesh` and the helper functions have the same names as above (`twin, next, vertex, edge, face, he`).
 
 ### (Optional Reading) Internal representation
 
