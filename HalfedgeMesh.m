@@ -77,6 +77,9 @@ Return[{mesh,twin,next,vertex,edge,face,he}]
 (* Returns true if and only if h is contained in the mesh boundary. *)
 onBoundary[h_]:=(h//twin)==-1;
 
+(* Returns the index of a vertex, edge, or face. *)
+index[{element_,i_}]:=i;
+
 (* Returns the coordinates of vertex v *)
 position[v_]:=vertexCoordinates[[v[[2]]]];
 

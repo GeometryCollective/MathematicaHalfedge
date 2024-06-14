@@ -71,9 +71,11 @@ meanEdgeLength = totalLength/Length[mesh["edges"]]
 
 The HalfedgeMesh package also defines several utility functions.  Note that, in order to keep function invocation concise, most of these functions assume the existence of a halfedge mesh named `mesh` (as built by `BuildHalfedge`), and that the element helper functions have the same names as above (`twin, next, vertex, edge, face, he`).  They also assume that there is a list of vertex coordinates named `vertexCoordinates` (as built by `loadPolygonalOBJ`).
 
-- `onBoundary[h]` — Returns a boolean indicating whether `h` is contained in the mesh boundary.
+- `index[x]` — Returns the index of a vertex, edge, or face `x`.  Like the element navigation helpers, it is often convenient to use this function in postfix form, e.g., `i = e//he//vertex//index` gets the index of one of the endpoints of edge `e`.
 
-- `position[v]` — Returns the coordinates of vertex `v`.  Note that, like the element helper functions, it is often convenient to call this function in a postfix fashion, e.g., `e//he//vertex//position` gets the position of one of the endpoints of edge `e`.
+- `position[v]` — Returns the coordinates of vertex `v`.  Note that, like the element helper functions, it is often convenient to call this function in postfix form, e.g., `e//he//vertex//position` gets the position of one of the endpoints of edge `e`.
+
+- `onBoundary[h]` — Returns a boolean indicating whether `h` is contained in the mesh boundary.
 
 - `DrawHalfedgeMesh[]` — Draws the mesh in 3D.  Note that this function has not been carefully calibrated to draw meshes of different sizes, and may draw very small (or very large) widgets for vertices, edges, etc.
 
