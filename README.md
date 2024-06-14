@@ -1,6 +1,6 @@
 # HalfedgeMesh.m
 
-<img width="445" alt="test" src="https://github.com/GeometryCollective/MathematicaHalfedge/assets/3604525/40198f0c-571a-4aaa-b1be-2daa17b30644">
+![Polyhedral torus with halfedge connectivity](test.png)
 
 This _Mathematica_ package provides an implementation of the halfedge mesh data structure aimed at quick prototyping and concise, legible mesh navigation code.  It is not intended for large-scale/high-performance mesh processing, nor is it well-packaged/encapsulated, since it assumes a single mesh (and defines functions that pollute the global namespace).
 
