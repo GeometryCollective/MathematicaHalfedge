@@ -176,8 +176,8 @@ l=Norm[p2-p1];
 u=Normalize[p2-p1];
 
 (* endpoints of arrow *)
-q1=m+gHalfedgeScale l u/2+.03t;
-q2=m-gHalfedgeScale l u/2+.03t;
+q1=m-gHalfedgeScale l u/2+.03t;
+q2=m+gHalfedgeScale l u/2+.03t;
 AppendTo[gHalfedges,Arrow[Tube[{q1,q2},.005]]],
 {h,mesh["halfedges"]}
 ];
