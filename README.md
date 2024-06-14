@@ -99,8 +99,8 @@ The `mesh` itself is then just a collection of element lists; the methods `twin`
 - The association `mesh` contains lists of all mesh elements.  Each halfedge is just a raw index; each vertex/edge/face is a pair, where the first element gives the dimension of the element:
    - `mesh["halfedges"]` — halfedges as raw indices 1, …, |H|
    - `mesh["vertices"]` — vertices as pairs {1,1}, {1,2}, …, {1,|V|}
-   - `mesh["edges"]` — edges as pairs {2,1}, {2,2}, …, {1,|V|}
-   - `mesh["faces"]` — faces as pairs {3,1}, {3,2}, …, {1,|V|}
+   - `mesh["edges"]` — edges as pairs {2,1}, {2,2}, …, {2,|E|}
+   - `mesh["faces"]` — faces as pairs {3,1}, {3,2}, …, {3,|F|}
 - The function `twin[h]` gives the twin of `h`.
 - The function `next[h]` gives the next halfedge following `h` within its polygon, as an index.
 - The function `vertex[h]` gives the vertex at the tail of `h`, as a pair `{1,v}`).
