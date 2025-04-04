@@ -72,7 +72,7 @@ meanEdgeLength = totalLength/Length[mesh["edges"]]
 Examples can be found in the `examples/` subdirectory.
 
 - `LaplaceEquation.m` — solves a Laplace equation with Dirichlet boundary conditions, using the sparse cotan Laplacian.  This example shows how to do typical matrix-based geometry processing using the `HalfedgeMesh` library.   
-<img src="examples/LaplaceEquation.jpg" width="1012">
+<img src="examples/LaplaceEquation.jpg" width="400">
 
 ### Library functions
 
