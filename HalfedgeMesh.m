@@ -75,7 +75,27 @@ Return[{mesh,twin,next,vertex,edge,face,he}]
 ];
 
 (* Returns true if and only if h is contained in the mesh boundary. *)
-onBoundary[h_]:=(h//twin)==-1;
+isBoundaryHalfedge[h_]:=(h//twin)==-1;
+
+(* Returns true if and only if v is contained in the domain boundary *)
+isBoundaryVertex[v_]:=Module[{h},
+h=he[v];
+While[True,
+If[isBoundaryHalfedge[h],Return[True]];
+h=h//twin//next;
+If[h==he[v],Break[]];
+];
+Return[False];
+];
+
+(* Returns true if and only if e is contained in the domain boundary *)
+isBoundaryEdge[e_]:=Module[{h},
+h=e//he;
+If[isBoundaryHalfedge[h],Return[True]];
+h=h//twin;
+If[isBoundaryHalfedge[h//twin],Return[True]];
+Return[False];
+];
 
 (* Returns the index of a vertex, edge, or face. *)
 index[{element_,i_}]:=i;
@@ -114,6 +134,27 @@ v=p1-p2;
 Return[ArcTan[u . v,Norm[Cross[u,v]]]];
 ];
 
+(* Computes the cotangent weight associated with halfedge h *)
+HalfedgeCotan[h_]:=Module[{a,b,c,u,v},
+a=h//next//next//vertex//position;
+b=h//vertex//position;
+c=h//next//vertex//position;
+u=b-a;
+v=c-a;
+Return[u . v/Norm[Cross[u,v]]];
+];
+
+(* Computes the cotangent weight associated with edge e *)
+EdgeCotan[e_]:=Module[{w,h},
+w=0;
+h=e//he;
+w+=HalfedgeCotan[h];
+If[!isBoundaryHalfedge[h//twin],
+w+=HalfedgeCotan[h//twin];
+];
+Return[w];
+];
+
 (* Draw halfedge mesh *)
 DrawHalfedgeMesh[]:=Module[{gVertices,gEdges,gBoundaryEdges,gFaces,gHalfedges,gBlue,v1,v2,h,gVerts,p1,p2,p3,t,n,m,l,u,q1,q2,gHalfedgeScale},
 (* Vertices *)
@@ -123,7 +164,7 @@ gVertices=Sphere[#,.02]&/@vertexCoordinates;
 gEdges={};
 Do[
 h=e//he;
-If[!onBoundary[h],
+If[!isBoundaryHalfedge[h],
 v1=h//vertex;
 v2=h//twin//vertex;
 AppendTo[gEdges,Tube[{v1//position,v2//position}]]
@@ -135,7 +176,7 @@ AppendTo[gEdges,Tube[{v1//position,v2//position}]]
 gBoundaryEdges={};
 Do[
 h=e//he;
-If[onBoundary[h],
+If[isBoundaryHalfedge[h],
 v1=h//vertex;
 v2=h//next//vertex;
 AppendTo[gBoundaryEdges,Tube[{v1//position,v2//position}]]

@@ -1,0 +1,881 @@
+(* Content-type: application/vnd.wolfram.mathematica *)
+
+(*** Wolfram Notebook File ***)
+(* http://www.wolfram.com/nb *)
+
+(* CreatedBy='Mathematica 12.0' *)
+
+(*CacheID: 234*)
+(* Internal cache information:
+NotebookFileLineBreakTest
+NotebookFileLineBreakTest
+NotebookDataPosition[       158,          7]
+NotebookDataLength[     38397,        873]
+NotebookOptionsPosition[     37604,        852]
+NotebookOutlinePosition[     38031,        869]
+CellTagsIndexPosition[     37988,        866]
+WindowFrame->Normal*)
+
+(* Beginning of Notebook Content *)
+Notebook[{
+Cell[BoxData[
+ RowBox[{"Exit", "[", "]"}]], "Input",
+ CellChangeTimes->{{3.9527522737231092`*^9, 3.952752274434071*^9}},
+ CellLabel->"In[13]:=",ExpressionUUID->"2523591a-c635-4f9b-b570-8aca9854b9b4"],
+
+Cell[BoxData[{
+ RowBox[{
+  RowBox[{"SetDirectory", "[", 
+   RowBox[{"NotebookDirectory", "[", "]"}], "]"}], ";"}], "\[IndentingNewLine]", 
+ RowBox[{
+  RowBox[{"Import", "[", "\"\<../HalfedgeMesh.m\>\"", "]"}], ";"}]}], "Input",\
+
+ CellChangeTimes->{{3.952768091085945*^9, 3.9527680912444057`*^9}},
+ CellLabel->"In[1]:=",ExpressionUUID->"57afa85b-f202-4ad9-b1d9-75408832ebf5"],
+
+Cell[CellGroupData[{
+
+Cell[BoxData[
+ RowBox[{
+  RowBox[{"(*", " ", 
+   RowBox[{"Load", " ", "the", " ", "mesh"}], " ", "*)"}], 
+  "\[IndentingNewLine]", 
+  RowBox[{
+   RowBox[{
+    RowBox[{"in", "=", 
+     RowBox[{"Import", "[", "\"\<disk.obj\>\"", "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"vertexCoordinates", "=", 
+     RowBox[{"MeshCoordinates", "[", "in", "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"polygons", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"#", "[", 
+        RowBox[{"[", "1", "]"}], "]"}], "&"}], "/@", 
+      RowBox[{"MeshCells", "[", 
+       RowBox[{"in", ",", "2"}], "]"}]}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{
+     RowBox[{"{", 
+      RowBox[{
+      "mesh", ",", "twin", ",", "next", ",", "vertex", ",", "edge", ",", 
+       "face", ",", "he"}], "}"}], "=", 
+     RowBox[{"BuildHalfedge", "[", "polygons", "]"}]}], ";"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "Assign", " ", "positive", " ", "indices", " ", "to", " ", "the", " ", 
+      "interior", " ", "vertices"}], ",", " ", 
+     RowBox[{
+     "negative", " ", "indices", " ", "to", " ", "the", " ", "boundary", " ", 
+      "vertices"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"nV", "=", 
+     RowBox[{
+      RowBox[{"mesh", "[", "\"\<vertices\>\"", "]"}], "//", "Length"}]}], 
+    ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"number", " ", "of", " ", "vertices"}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"ind", "=", 
+     RowBox[{"Array", "[", 
+      RowBox[{
+       RowBox[{"0", "&"}], ",", "nV"}], "]"}]}], ";"}], 
+   RowBox[{"(*", " ", "indices", " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"nI", "=", "0"}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"number", " ", "of", " ", "interior", " ", "vertices"}], " ", 
+    "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"nB", "=", "0"}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"number", " ", "of", " ", "boundary", " ", "vertices"}], " ", 
+    "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"For", "[", 
+     RowBox[{
+      RowBox[{"i", "=", "1"}], ",", 
+      RowBox[{"i", "\[LessEqual]", "nV"}], ",", 
+      RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"!", 
+          RowBox[{"isBoundaryVertex", "[", 
+           RowBox[{"{", 
+            RowBox[{"1", ",", "i"}], "}"}], "]"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"nI", "++"}], ";", 
+          RowBox[{
+           RowBox[{"ind", "[", 
+            RowBox[{"[", "i", "]"}], "]"}], "=", "nI"}]}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"nB", "++"}], ";", 
+          RowBox[{
+           RowBox[{"ind", "[", 
+            RowBox[{"[", "i", "]"}], "]"}], "=", 
+           RowBox[{"-", "nB"}]}]}]}], "\[IndentingNewLine]", "]"}], ";"}]}], 
+     "\[IndentingNewLine]", "]"}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"nB", "=", 
+     RowBox[{"nV", "-", "nI"}]}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"number", " ", "of", " ", "boundary", " ", "vertices"}], " ", 
+    "*)"}], "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "Assemble", " ", "the", " ", "Laplace", " ", "equation", " ", "Lu"}], "=",
+      "f"}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"f", "=", 
+     RowBox[{"Array", "[", 
+      RowBox[{
+       RowBox[{"0", "&"}], ",", "nI"}], "]"}]}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"right", " ", "hand", " ", "side"}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"b", "=", 
+     RowBox[{"Array", "[", 
+      RowBox[{
+       RowBox[{"0", "&"}], ",", "nB"}], "]"}]}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"boundary", " ", "data"}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"For", "[", 
+     RowBox[{
+      RowBox[{"i", "=", "1"}], ",", 
+      RowBox[{"i", "\[LessEqual]", "nV"}], ",", 
+      RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"vi", "=", 
+        RowBox[{"{", 
+         RowBox[{"1", ",", "i"}], "}"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"isBoundaryVertex", "[", "vi", "]"}], ",", 
+         "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"x", "=", 
+           RowBox[{".5", "+", 
+            RowBox[{".5", 
+             RowBox[{
+              RowBox[{"position", "[", "vi", "]"}], "[", 
+              RowBox[{"[", "1", "]"}], "]"}]}]}]}], ";", 
+          "\[IndentingNewLine]", 
+          RowBox[{
+           RowBox[{"b", "[", 
+            RowBox[{"[", 
+             RowBox[{"-", 
+              RowBox[{"ind", "[", 
+               RowBox[{"[", "i", "]"}], "]"}]}], "]"}], "]"}], "=", 
+           RowBox[{"4", 
+            SuperscriptBox[
+             RowBox[{"(", 
+              RowBox[{"x", "-", ".5"}], ")"}], "2"]}]}], ";"}]}], 
+        "\[IndentingNewLine]", "]"}], ";"}]}], "\[IndentingNewLine]", "]"}], 
+    ";"}], "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{"collect", " ", "nonzero", " ", "entries", " ", "of", " ", "L", " ", 
+     RowBox[{"(", 
+      RowBox[{
+       RowBox[{"possibly", " ", "with", " ", "repeated", " ", "entries"}], ",",
+        " ", 
+       RowBox[{
+       "whose", " ", "values", " ", "will", " ", "be", " ", "summed"}]}], 
+      ")"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"entries", "=", 
+     RowBox[{
+      RowBox[{"Reap", "[", "\[IndentingNewLine]", 
+       RowBox[{
+        RowBox[{"Do", "[", "\[IndentingNewLine]", 
+         RowBox[{
+          RowBox[{"If", "[", 
+           RowBox[{
+            RowBox[{"!", 
+             RowBox[{"isBoundaryEdge", "[", "ij", "]"}]}], ",", 
+            RowBox[{"(*", " ", 
+             RowBox[{
+             "at", " ", "least", " ", "one", " ", "of", " ", "i", " ", "and", 
+              " ", "j", " ", "is", " ", "not", " ", "on", " ", "the", " ", 
+              "boundary"}], " ", "*)"}], "\[IndentingNewLine]", 
+            RowBox[{"(*", " ", 
+             RowBox[{
+             "Get", " ", "the", " ", "endpoints", " ", "of", " ", "the", " ", 
+              "current", " ", "edge"}], " ", "*)"}], "\[IndentingNewLine]", 
+            RowBox[{
+             RowBox[{"i", "=", 
+              RowBox[{"ind", "[", 
+               RowBox[{"[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{"ij", "//", "he"}], "//", "vertex"}], "//", 
+                 "index"}], "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+             RowBox[{"j", "=", 
+              RowBox[{"ind", "[", 
+               RowBox[{"[", 
+                RowBox[{
+                 RowBox[{
+                  RowBox[{
+                   RowBox[{"ij", "//", "he"}], "//", "twin"}], "//", 
+                  "vertex"}], "//", "index"}], "]"}], "]"}]}], ";", 
+             "\[IndentingNewLine]", 
+             RowBox[{"(*", " ", 
+              RowBox[{"Define", " ", "the", " ", "edge", " ", "weight"}], " ",
+               "*)"}], "\[IndentingNewLine]", 
+             RowBox[{"wij", "=", 
+              RowBox[{"EdgeCotan", "[", "ij", "]"}]}], ";", 
+             "\[IndentingNewLine]", 
+             RowBox[{"(*", " ", 
+              RowBox[{"Diagonal", " ", "entries"}], " ", "*)"}], 
+             "\[IndentingNewLine]", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{"i", ">", "0"}], ",", 
+               RowBox[{"Sow", "[", 
+                RowBox[{"{", 
+                 RowBox[{"i", ",", "i", ",", 
+                  RowBox[{"-", "wij"}]}], "}"}], "]"}]}], "]"}], ";", 
+             "\[IndentingNewLine]", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{"j", ">", "0"}], ",", 
+               RowBox[{"Sow", "[", 
+                RowBox[{"{", 
+                 RowBox[{"j", ",", "j", ",", 
+                  RowBox[{"-", "wij"}]}], "}"}], "]"}]}], "]"}], ";", 
+             "\[IndentingNewLine]", 
+             RowBox[{"(*", " ", 
+              RowBox[{"Off", "-", 
+               RowBox[{"diagonal", " ", "entries"}]}], " ", "*)"}], 
+             "\[IndentingNewLine]", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"i", ">", "0"}], "&&", 
+                RowBox[{"j", ">", "0"}]}], ",", 
+               RowBox[{"(*", " ", 
+                RowBox[{
+                "both", " ", "endpoints", " ", "are", " ", "interior"}], " ", 
+                "*)"}], "\[IndentingNewLine]", 
+               RowBox[{
+                RowBox[{"Sow", "[", 
+                 RowBox[{"{", 
+                  RowBox[{"i", ",", "j", ",", "wij"}], "}"}], "]"}], ";", 
+                "\[IndentingNewLine]", 
+                RowBox[{"Sow", "[", 
+                 RowBox[{"{", 
+                  RowBox[{"j", ",", "i", ",", "wij"}], "}"}], "]"}], ";"}]}], 
+              "\[IndentingNewLine]", "]"}], ";", "\[IndentingNewLine]", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"i", ">", "0"}], "&&", 
+                RowBox[{"j", "<", "0"}]}], ",", 
+               RowBox[{
+                RowBox[{"f", "[", 
+                 RowBox[{"[", "i", "]"}], "]"}], "-=", 
+                RowBox[{"wij", " ", 
+                 RowBox[{"b", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"-", "j"}], "]"}], "]"}]}]}]}], "]"}], ";", " ", 
+             RowBox[{"(*", " ", 
+              RowBox[{
+              "j", " ", "is", " ", "on", " ", "the", " ", "boundary"}], " ", 
+              "*)"}], "\[IndentingNewLine]", 
+             RowBox[{"If", "[", 
+              RowBox[{
+               RowBox[{
+                RowBox[{"j", ">", "0"}], "&&", 
+                RowBox[{"i", "<", "0"}]}], ",", 
+               RowBox[{
+                RowBox[{"f", "[", 
+                 RowBox[{"[", "j", "]"}], "]"}], "-=", 
+                RowBox[{"wij", " ", 
+                 RowBox[{"b", "[", 
+                  RowBox[{"[", 
+                   RowBox[{"-", "i"}], "]"}], "]"}]}]}]}], "]"}], ";"}]}], 
+           " ", 
+           RowBox[{"(*", " ", 
+            RowBox[{"i", " ", "is", " ", "on", " ", "the", " ", "boundary"}], 
+            " ", "*)"}], "\[IndentingNewLine]", "]"}], ",", 
+          "\[IndentingNewLine]", 
+          RowBox[{"{", 
+           RowBox[{"ij", ",", 
+            RowBox[{"mesh", "[", "\"\<edges\>\"", "]"}]}], "}"}]}], 
+         "\[IndentingNewLine]", "]"}], ";"}], "\[IndentingNewLine]", "]"}], "[", 
+      RowBox[{"[", 
+       RowBox[{"2", ",", "1"}], "]"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   
+   RowBox[{
+    RowBox[{"entries", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"#", "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ",", "1"}], "]"}], "]"}], ",", 
+         RowBox[{"#", "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ",", "2"}], "]"}], "]"}], ",", 
+         RowBox[{"Total", "[", 
+          RowBox[{"#", "[", 
+           RowBox[{"[", 
+            RowBox[{"All", ",", "3"}], "]"}], "]"}], "]"}]}], "}"}], "&"}], "/@", 
+      RowBox[{"GatherBy", "[", 
+       RowBox[{"entries", ",", "Most"}], "]"}]}]}], ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"sum", " ", "tuples", " ", "with", " ", "the", " ", "same", " ", 
+     RowBox[{"row", "/", "column"}], " ", "index"}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"L", "=", 
+     RowBox[{"SparseArray", "[", 
+      RowBox[{
+       RowBox[{
+        RowBox[{
+         RowBox[{"{", 
+          RowBox[{
+           RowBox[{"#", "[", 
+            RowBox[{"[", "1", "]"}], "]"}], ",", 
+           RowBox[{"#", "[", 
+            RowBox[{"[", "2", "]"}], "]"}]}], "}"}], "->", 
+         RowBox[{"#", "[", 
+          RowBox[{"[", "3", "]"}], "]"}]}], "&"}], "/@", "entries"}], "]"}]}],
+     ";"}], " ", 
+   RowBox[{"(*", " ", 
+    RowBox[{"build", " ", "the", " ", "sparse", " ", "matrix"}], " ", "*)"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"Solve", " ", "the", " ", "Laplace", " ", "equation", " ", 
+      SubscriptBox["Lu", "I"]}], "=", 
+     RowBox[{
+     "f", " ", "for", " ", "the", " ", "solution", " ", "u", " ", "at", " ", 
+      "interior", " ", "vertices"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"uI", "=", 
+     RowBox[{"LinearSolve", "[", 
+      RowBox[{"L", ",", "f"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{"Print", "[", 
+    RowBox[{"\"\<residual: \>\"", "<>", 
+     RowBox[{"ToString", "[", 
+      RowBox[{"CForm", "[", 
+       RowBox[{"Norm", "[", 
+        RowBox[{
+         RowBox[{"L", ".", "uI"}], "-", "f"}], "]"}], "]"}], "]"}]}], "]"}], 
+   "\[IndentingNewLine]", "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{"Assemble", " ", "the", " ", "overall", " ", "solution"}], ",", 
+     " ", 
+     RowBox[{"combining", " ", "the", " ", "interior", " ", "solution", " ", 
+      SubscriptBox["u", "I"], " ", "and", " ", "the", " ", "boundary", " ", 
+      "data", " ", "b"}]}], " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"u", "=", 
+     RowBox[{"Array", "[", 
+      RowBox[{
+       RowBox[{"0", "&"}], ",", "nV"}], "]"}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"For", "[", 
+     RowBox[{
+      RowBox[{"i", "=", "1"}], ",", 
+      RowBox[{"i", "\[LessEqual]", "nV"}], ",", 
+      RowBox[{"i", "++"}], ",", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"p", "=", 
+        RowBox[{"ind", "[", 
+         RowBox[{"[", "i", "]"}], "]"}]}], ";", "\[IndentingNewLine]", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"p", "<", "0"}], ",", 
+         RowBox[{
+          RowBox[{"u", "[", 
+           RowBox[{"[", "i", "]"}], "]"}], "=", 
+          RowBox[{"b", "[", 
+           RowBox[{"[", 
+            RowBox[{"-", "p"}], "]"}], "]"}]}]}], "]"}], ";", 
+       "\[IndentingNewLine]", 
+       RowBox[{"If", "[", 
+        RowBox[{
+         RowBox[{"p", ">", "0"}], ",", 
+         RowBox[{
+          RowBox[{"u", "[", 
+           RowBox[{"[", "i", "]"}], "]"}], "=", 
+          RowBox[{"uI", "[", 
+           RowBox[{"[", "p", "]"}], "]"}]}]}], "]"}], ";"}]}], 
+     "\[IndentingNewLine]", "]"}], ";"}], "\[IndentingNewLine]", 
+   "\[IndentingNewLine]", 
+   RowBox[{"(*", " ", 
+    RowBox[{
+     RowBox[{
+     "Plot", " ", "the", " ", "solution", " ", "both", " ", "using", " ", 
+      "vertex", " ", "colors"}], ",", " ", 
+     RowBox[{"and", " ", "as", " ", "a", " ", "height", " ", "function"}]}], 
+    " ", "*)"}], "\[IndentingNewLine]", 
+   RowBox[{
+    RowBox[{"graphCoords", "=", 
+     RowBox[{
+      RowBox[{
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"#", "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ",", "1"}], "]"}], "]"}], ",", 
+         RowBox[{"#", "[", 
+          RowBox[{"[", 
+           RowBox[{"1", ",", "2"}], "]"}], "]"}], ",", 
+         RowBox[{"#", "[", 
+          RowBox[{"[", "2", "]"}], "]"}]}], "}"}], "&"}], "/@", 
+      RowBox[{"(", 
+       RowBox[{
+        RowBox[{"{", 
+         RowBox[{"vertexCoordinates", ",", "u"}], "}"}], "\[Transpose]"}], 
+       ")"}]}]}], ";"}], "\[IndentingNewLine]", 
+   RowBox[{"Graphics3D", "[", 
+    RowBox[{
+     RowBox[{"{", "\[IndentingNewLine]", 
+      RowBox[{
+       RowBox[{"GraphicsComplex", "[", 
+        RowBox[{"vertexCoordinates", ",", 
+         RowBox[{"Polygon", "/@", "polygons"}], ",", 
+         RowBox[{"VertexColors", "->", 
+          RowBox[{"Hue", "/@", "u"}]}]}], "]"}], ",", "\[IndentingNewLine]", 
+       RowBox[{"GraphicsComplex", "[", 
+        RowBox[{"graphCoords", ",", 
+         RowBox[{"Polygon", "/@", "polygons"}]}], "]"}], ",", 
+       "\[IndentingNewLine]", 
+       RowBox[{"{", 
+        RowBox[{
+         RowBox[{"Opacity", "[", ".2", "]"}], ",", "Blue", ",", 
+         RowBox[{
+          RowBox[{
+           RowBox[{"Sphere", "[", 
+            RowBox[{
+             RowBox[{"position", "[", 
+              RowBox[{"{", 
+               RowBox[{"1", ",", "#"}], "}"}], "]"}], ",", ".04"}], "]"}], 
+           "&"}], "/@", 
+          RowBox[{"(", 
+           RowBox[{
+            RowBox[{"Position", "[", 
+             RowBox[{"ind", ",", "0"}], "]"}], "//", "Flatten"}], ")"}]}]}], 
+        "}"}]}], "\[IndentingNewLine]", "}"}], ",", 
+     RowBox[{"Boxed", "\[Rule]", "False"}], ",", 
+     RowBox[{"Lighting", "->", "\"\<Neutral\>\""}]}], "]"}]}]}]], "Input",
+ CellChangeTimes->{{3.952667593060581*^9, 3.952667597770912*^9}, {
+   3.952752793629251*^9, 3.952752800496234*^9}, {3.95275314394739*^9, 
+   3.952753147421761*^9}, {3.952765790018633*^9, 3.952765790504476*^9}, 
+   3.952766976210689*^9, {3.9527676566262083`*^9, 3.9527678935064163`*^9}, {
+   3.952767928332156*^9, 3.9527679612396793`*^9}, {3.952768014850647*^9, 
+   3.952768015350141*^9}, 3.952768062562971*^9, {3.952768223911085*^9, 
+   3.9527682495557833`*^9}, 3.952768293995969*^9, 3.95276836078263*^9},
+ CellLabel->"In[8]:=",ExpressionUUID->"80d75143-028e-43cb-a5a9-8d3c638b2126"],
+
+Cell[BoxData["\<\"residual: 4.7321690182455835e-15\"\>"], "Print",
+ CellChangeTimes->{{3.952768349597555*^9, 3.952768361468645*^9}},
+ CellLabel->
+  "During evaluation of \
+In[8]:=",ExpressionUUID->"884ce308-5b6b-40ef-9936-82d0418a2a4f"],
+
+Cell[BoxData[
+ Graphics3DBox[{GraphicsComplex3DBox[CompressedData["
+1:eJxVVX9MlHUcfhHLQeFysplW820hrHBChtiYxpFb64dujQGZHvCOZquAQnNF
+kO6VkpyzUtBTp7YXJrAMOpBcZyi8HL9EQY7fiAHveRygcBzLORWn5PvcH77P
+bbfb99nnnu/z+fV8X077Kn7bPEEQvnj89Rfw0Rrqp+se/0ordl6pE558FMun
+U/pZDpodNOLiou5bwFc5G424vHT3Tf1s2mG5YcSFyNYx/awNPugh/tTro+AJ
+Dqgg/qidmn5WzfEO4umwglcNMY8YcdOl5AHgJZ+QTjX6VS/u9funNdaAS61n
+gMuBd49Q/JkcX17vR1VSfEf/dR0Xy98cJT3rbe04p2x2Uh02hUOfuKdqkvjv
+23z5uB+OE56dZEX9Sz3Erxw81QH9pd6DRlxqm4Qe+c/DxXTvchn1FQ/tukw6
+H2yp0fMxzc5/geqcfOFHHRc/Tm+kfG/XV+Feiz2b6jyeXI3zM8d7jPFKtAtz
+oPXtIx7tdEqFr54LuomnoMAOnWvXNBtxbUNmK3hy3+mj+P3vuhGfnEF1kyKD
+hvSzkrx4wHiv6a9w9EMMsDcYcXFrHHiV7U7SqZQHou/S+jAH4d8t9EC/LWmQ
+8op5DTpMJXc6qW6/PDcBHuU+6RFzGrEXwpeWG4SPx2MvxAvfNBHP3q3D4J96
+atSIq1Wib192Ldco3x/yEa9u7pwk/GnBVzfvyXG6tyUGPGrCbDfl2zCNeTM9
+395L+f5+Hv0T2xc5if/hHfTRlPbeCOEhneijYksk/VqG30XE1xzzUr5KOvjV
+eanTpCdsZRPyrY69SXWIt2DO1dgcyktrHjivn5UIq4t49vjvB/5hDvEI/mWV
+0Bm+juuctewn/ay1BA4TT1UR9kLqj6C9FjNe6UJeiYXTNLfhtefAf7zMS/Fy
+D+qu5S0hv5IzN/0NPG2ml+KtC+qgo6CSfeb7pnLwu14for2Q/NA/aeSsh3xm
+sFSFD2y0TxB/odOu43JcNOmUzhZZwBPydhPhG7Iu67hq/432V6xdDF/QLH1u
+8rHhA5gPZVs9vQva6mnMsWg1076Lji70QzpWRPsuf/AfcG0mj/xfO9rhRn0W
+fkY+o5gf4V7tdDD1Sx67hHvVq4eqqe8Be7HnJreH3jVB1DBPcl2qnfCC2inE
+516jPipiPuZMfiO/n+p/1DGBvFJkF83JUlcX4q0Jh2lP623YE2llVD7pjGkB
+v/iSm3Rq3z6LeO3qIL3jwr01beBZUUH7Ls2f8/m4N+ka7UVoE/xILDzwL+ET
+kUPQGZpL/iPf/hk+KJ3aTv4mmSJ8cVlx9F6oq0Ywn6rr8yu0v49u4Z3WzGUT
+hAcV4/9KwD0P1edIz0XEqzvYT/b1wn/lt8bGSGdYHvRJNZm876ujMT9q4kfk
+J2peqW9uf00nX5X/cJ7DeYb9U91YCd3KuoQS0n93mY+3cK6D/MQxBL9Tdi9p
+I/7sScyVuEWmvsihDvRdm3uR35HgSJ/+tcXUL/nrE82Yz5aTT96X/wHnp1GW
+
+    "], {Polygon3DBox[{1, 2, 3}], Polygon3DBox[{4, 5, 2}], 
+     Polygon3DBox[{6, 3, 5}], Polygon3DBox[{2, 5, 3}], 
+     Polygon3DBox[{6, 5, 7}], Polygon3DBox[{4, 8, 5}], 
+     Polygon3DBox[{9, 7, 8}], Polygon3DBox[{5, 8, 7}], 
+     Polygon3DBox[{10, 11, 12}], Polygon3DBox[{1, 3, 11}], 
+     Polygon3DBox[{6, 12, 3}], Polygon3DBox[{11, 3, 12}], 
+     Polygon3DBox[{9, 13, 14}], Polygon3DBox[{15, 16, 13}], 
+     Polygon3DBox[{17, 14, 16}], Polygon3DBox[{13, 16, 14}], 
+     Polygon3DBox[{18, 19, 20}], Polygon3DBox[{6, 7, 19}], 
+     Polygon3DBox[{9, 20, 7}], Polygon3DBox[{19, 7, 20}], 
+     Polygon3DBox[{21, 22, 23}], Polygon3DBox[{24, 25, 22}], 
+     Polygon3DBox[{18, 23, 25}], Polygon3DBox[{22, 25, 23}], 
+     Polygon3DBox[{26, 27, 28}], Polygon3DBox[{18, 20, 27}], 
+     Polygon3DBox[{9, 28, 20}], Polygon3DBox[{27, 20, 28}], 
+     Polygon3DBox[{9, 8, 13}], Polygon3DBox[{4, 29, 8}], 
+     Polygon3DBox[{15, 13, 29}], Polygon3DBox[{8, 29, 13}], 
+     Polygon3DBox[{30, 31, 32}], Polygon3DBox[{6, 19, 31}], 
+     Polygon3DBox[{18, 32, 19}], Polygon3DBox[{31, 19, 32}], 
+     Polygon3DBox[{10, 33, 34}], Polygon3DBox[{35, 36, 33}], 
+     Polygon3DBox[{37, 34, 36}], Polygon3DBox[{33, 36, 34}], 
+     Polygon3DBox[{10, 12, 33}], Polygon3DBox[{6, 38, 12}], 
+     Polygon3DBox[{35, 33, 38}], Polygon3DBox[{12, 38, 33}], 
+     Polygon3DBox[{30, 39, 40}], Polygon3DBox[{41, 42, 39}], 
+     Polygon3DBox[{37, 40, 42}], Polygon3DBox[{39, 42, 40}], 
+     Polygon3DBox[{37, 36, 40}], Polygon3DBox[{35, 43, 36}], 
+     Polygon3DBox[{30, 40, 43}], Polygon3DBox[{36, 43, 40}], 
+     Polygon3DBox[{30, 44, 45}], Polygon3DBox[{24, 46, 44}], 
+     Polygon3DBox[{47, 45, 46}], Polygon3DBox[{44, 46, 45}], 
+     Polygon3DBox[{30, 43, 31}], Polygon3DBox[{35, 38, 43}], 
+     Polygon3DBox[{6, 31, 38}], Polygon3DBox[{43, 38, 31}], 
+     Polygon3DBox[{48, 49, 50}], Polygon3DBox[{41, 51, 49}], 
+     Polygon3DBox[{47, 50, 51}], Polygon3DBox[{49, 51, 50}], 
+     Polygon3DBox[{52, 53, 54}], Polygon3DBox[{48, 50, 53}], 
+     Polygon3DBox[{47, 54, 50}], Polygon3DBox[{53, 50, 54}], 
+     Polygon3DBox[{47, 46, 54}], Polygon3DBox[{24, 55, 46}], 
+     Polygon3DBox[{52, 54, 55}], Polygon3DBox[{46, 55, 54}], 
+     Polygon3DBox[{47, 51, 45}], Polygon3DBox[{41, 39, 51}], 
+     Polygon3DBox[{30, 45, 39}], Polygon3DBox[{51, 39, 45}], 
+     Polygon3DBox[{24, 44, 25}], Polygon3DBox[{30, 32, 44}], 
+     Polygon3DBox[{18, 25, 32}], Polygon3DBox[{44, 32, 25}], 
+     Polygon3DBox[{17, 16, 56}], Polygon3DBox[{15, 57, 16}], 
+     Polygon3DBox[{58, 56, 57}], Polygon3DBox[{16, 57, 56}], 
+     Polygon3DBox[{59, 60, 61}], Polygon3DBox[{26, 62, 60}], 
+     Polygon3DBox[{17, 61, 62}], Polygon3DBox[{60, 62, 61}], 
+     Polygon3DBox[{63, 64, 65}], Polygon3DBox[{17, 56, 64}], 
+     Polygon3DBox[{58, 65, 56}], Polygon3DBox[{64, 56, 65}], 
+     Polygon3DBox[{26, 66, 27}], Polygon3DBox[{21, 23, 66}], 
+     Polygon3DBox[{18, 27, 23}], Polygon3DBox[{66, 23, 27}], 
+     Polygon3DBox[{59, 67, 60}], Polygon3DBox[{21, 66, 67}], 
+     Polygon3DBox[{26, 60, 66}], Polygon3DBox[{67, 66, 60}], 
+     Polygon3DBox[{17, 64, 61}], Polygon3DBox[{63, 68, 64}], 
+     Polygon3DBox[{59, 61, 68}], Polygon3DBox[{64, 68, 61}], 
+     Polygon3DBox[{17, 62, 14}], Polygon3DBox[{26, 28, 62}], 
+     Polygon3DBox[{9, 14, 28}], Polygon3DBox[{62, 28, 14}], 
+     Polygon3DBox[{59, 69, 70}], Polygon3DBox[{71, 72, 69}], 
+     Polygon3DBox[{73, 70, 72}], Polygon3DBox[{69, 72, 70}], 
+     Polygon3DBox[{71, 69, 74}], Polygon3DBox[{59, 68, 69}], 
+     Polygon3DBox[{63, 74, 68}], Polygon3DBox[{69, 68, 74}], 
+     Polygon3DBox[{75, 76, 77}], Polygon3DBox[{59, 70, 76}], 
+     Polygon3DBox[{73, 77, 70}], Polygon3DBox[{76, 70, 77}], 
+     Polygon3DBox[{78, 79, 80}], Polygon3DBox[{73, 72, 79}], 
+     Polygon3DBox[{71, 80, 72}], Polygon3DBox[{79, 72, 80}], 
+     Polygon3DBox[{21, 67, 81}], Polygon3DBox[{59, 76, 67}], 
+     Polygon3DBox[{75, 81, 76}], Polygon3DBox[{67, 76, 81}], 
+     Polygon3DBox[{82, 83, 84}], Polygon3DBox[{73, 79, 83}], 
+     Polygon3DBox[{78, 84, 79}], Polygon3DBox[{83, 79, 84}], 
+     Polygon3DBox[{85, 86, 87}], Polygon3DBox[{88, 89, 86}], 
+     Polygon3DBox[{52, 87, 89}], Polygon3DBox[{86, 89, 87}], 
+     Polygon3DBox[{88, 86, 90}], Polygon3DBox[{85, 91, 86}], 
+     Polygon3DBox[{75, 90, 91}], Polygon3DBox[{86, 91, 90}], 
+     Polygon3DBox[{52, 92, 53}], Polygon3DBox[{93, 94, 92}], 
+     Polygon3DBox[{48, 53, 94}], Polygon3DBox[{92, 94, 53}], 
+     Polygon3DBox[{93, 92, 95}], Polygon3DBox[{52, 89, 92}], 
+     Polygon3DBox[{88, 95, 89}], Polygon3DBox[{92, 89, 95}], 
+     Polygon3DBox[{88, 96, 95}], Polygon3DBox[{97, 98, 96}], 
+     Polygon3DBox[{93, 95, 98}], Polygon3DBox[{96, 98, 95}], 
+     Polygon3DBox[{52, 55, 87}], Polygon3DBox[{24, 99, 55}], 
+     Polygon3DBox[{85, 87, 99}], Polygon3DBox[{55, 99, 87}], 
+     Polygon3DBox[{75, 100, 101}], Polygon3DBox[{82, 102, 100}], 
+     Polygon3DBox[{103, 101, 102}], Polygon3DBox[{100, 102, 101}], 
+     Polygon3DBox[{82, 100, 83}], Polygon3DBox[{75, 77, 100}], 
+     Polygon3DBox[{73, 83, 77}], Polygon3DBox[{100, 77, 83}], 
+     Polygon3DBox[{97, 96, 104}], Polygon3DBox[{88, 105, 96}], 
+     Polygon3DBox[{103, 104, 105}], Polygon3DBox[{96, 105, 104}], 
+     Polygon3DBox[{103, 105, 101}], Polygon3DBox[{88, 90, 105}], 
+     Polygon3DBox[{75, 101, 90}], Polygon3DBox[{105, 90, 101}], 
+     Polygon3DBox[{85, 106, 91}], Polygon3DBox[{21, 81, 106}], 
+     Polygon3DBox[{75, 91, 81}], Polygon3DBox[{106, 81, 91}], 
+     Polygon3DBox[{85, 99, 106}], Polygon3DBox[{24, 22, 99}], 
+     Polygon3DBox[{21, 106, 22}], Polygon3DBox[{99, 22, 106}]},
+    VertexColors->{
+      Hue[0.9238150332601016], 
+      Hue[0.7876970674915107], 
+      Hue[0.8261005042766154], 
+      Hue[0.6346400992793519], 
+      Hue[0.6879752573687898], 
+      Hue[0.7014366721095817], 
+      Hue[0.5889252057659391], 
+      Hue[0.5392407614864648], 
+      Hue[0.47658695812657476`], 
+      Hue[0.9482494157977186], 
+      Hue[0.9793041545144412], 
+      Hue[0.8311144785705469], 
+      Hue[0.3848695653601633], 
+      Hue[0.3687552161407468], 
+      Hue[0.2371865217641158], 
+      Hue[0.24391476164642026`], 
+      Hue[0.2759442878934657], 
+      Hue[0.5201256231590999], 
+      Hue[0.5848139654874285], 
+      Hue[0.5192659618919019], 
+      Hue[0.49454784844168515`], 
+      Hue[0.4767907901912114], 
+      Hue[0.4914485271701076], 
+      Hue[0.44116553629274363`], 
+      Hue[0.49051519434419316`], 
+      Hue[0.44561049975805384`], 
+      Hue[0.4842485827493761], 
+      Hue[0.44798653566992075`], 
+      Hue[0.4423646413872717], 
+      Hue[0.5254273987552994], 
+      Hue[0.6245042742327332], 
+      Hue[0.5385856175684173], 
+      Hue[0.793114667421715], 
+      Hue[0.8244948354132795], 
+      Hue[0.7155018887991307], 
+      Hue[0.6997692931375705], 
+      Hue[0.6484018188936069], 
+      Hue[0.7213514111324278], 
+      Hue[0.40918726944642636`], 
+      Hue[0.5627832746337331], 
+      Hue[0.22749084482044069`], 
+      Hue[0.43066797406369517`], 
+      Hue[0.6440901495927804], 
+      Hue[0.46378630395314246`], 
+      Hue[0.3967302081311703], 
+      Hue[0.38179980805419605`], 
+      Hue[0.30941138150856545`], 
+      Hue[0.012837569411252636`], 
+      Hue[0.09207825998192565], 
+      Hue[0.1943727828069423], 
+      Hue[0.27494288416065193`], 
+      Hue[0.30624505676607927`], 
+      Hue[0.17454358474032156`], 
+      Hue[0.29335615505271845`], 
+      Hue[0.38010953327549085`], 
+      Hue[0.1314006531025462], 
+      Hue[0.08032236711613994], 
+      Hue[0.007213614119161216], 
+      Hue[0.454596673831012], 
+      Hue[0.4337769105204866], 
+      Hue[0.3417510252811981], 
+      Hue[0.38490204943778655`], 
+      Hue[0.10772115604823629`], 
+      Hue[0.196307330657605], 
+      Hue[0.021758903235618243`], 
+      Hue[0.47505959060664005`], 
+      Hue[0.4954192967575849], 
+      Hue[0.30370279939699396`], 
+      Hue[0.43665962098482375`], 
+      Hue[0.5687137520249764], 
+      Hue[0.42345474833291874`], 
+      Hue[0.5803565887470272], 
+      Hue[0.6764506930339691], 
+      Hue[0.24990002320574778`], 
+      Hue[0.6248698569481981], 
+      Hue[0.563456843334011], 
+      Hue[0.6734606035926317], 
+      Hue[0.8068763769269935], 
+      Hue[0.7419396529260995], 
+      Hue[0.60134284116522], 
+      Hue[0.5322856796496013], 
+      Hue[0.9826816906973512], 
+      Hue[0.8029620941554868], 
+      Hue[0.9414277629189236], 
+      Hue[0.46652784000646536`], 
+      Hue[0.46523233085848037`], 
+      Hue[0.4044796507029121], 
+      Hue[0.46050699256160804`], 
+      Hue[0.361038719350609], 
+      Hue[0.5681793020411031], 
+      Hue[0.5252031039123894], 
+      Hue[0.21388846227254169`], 
+      Hue[0.10393595905409914`], 
+      Hue[0.013578076050060395`], 
+      Hue[0.30840074995142763`], 
+      Hue[0.4508790372089681], 
+      Hue[0.439391329131368], 
+      Hue[0.2445678425105804], 
+      Hue[0.44491930237025457`], 
+      Hue[0.7867259376654043], 
+      Hue[0.718744219753183], 
+      Hue[0.9304088259969809], 
+      Hue[0.8167531855706898], 
+      Hue[0.6506987152266106], 
+      Hue[0.60732594378623], 
+      Hue[0.4903241793111704]}], GraphicsComplex3DBox[CompressedData["
+1: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
+ytPlpObDzOywLTryf8BHAnw=
+    "], {Polygon3DBox[{1, 2, 3}], Polygon3DBox[{4, 5, 2}], 
+     Polygon3DBox[{6, 3, 5}], Polygon3DBox[{2, 5, 3}], 
+     Polygon3DBox[{6, 5, 7}], Polygon3DBox[{4, 8, 5}], 
+     Polygon3DBox[{9, 7, 8}], Polygon3DBox[{5, 8, 7}], 
+     Polygon3DBox[{10, 11, 12}], Polygon3DBox[{1, 3, 11}], 
+     Polygon3DBox[{6, 12, 3}], Polygon3DBox[{11, 3, 12}], 
+     Polygon3DBox[{9, 13, 14}], Polygon3DBox[{15, 16, 13}], 
+     Polygon3DBox[{17, 14, 16}], Polygon3DBox[{13, 16, 14}], 
+     Polygon3DBox[{18, 19, 20}], Polygon3DBox[{6, 7, 19}], 
+     Polygon3DBox[{9, 20, 7}], Polygon3DBox[{19, 7, 20}], 
+     Polygon3DBox[{21, 22, 23}], Polygon3DBox[{24, 25, 22}], 
+     Polygon3DBox[{18, 23, 25}], Polygon3DBox[{22, 25, 23}], 
+     Polygon3DBox[{26, 27, 28}], Polygon3DBox[{18, 20, 27}], 
+     Polygon3DBox[{9, 28, 20}], Polygon3DBox[{27, 20, 28}], 
+     Polygon3DBox[{9, 8, 13}], Polygon3DBox[{4, 29, 8}], 
+     Polygon3DBox[{15, 13, 29}], Polygon3DBox[{8, 29, 13}], 
+     Polygon3DBox[{30, 31, 32}], Polygon3DBox[{6, 19, 31}], 
+     Polygon3DBox[{18, 32, 19}], Polygon3DBox[{31, 19, 32}], 
+     Polygon3DBox[{10, 33, 34}], Polygon3DBox[{35, 36, 33}], 
+     Polygon3DBox[{37, 34, 36}], Polygon3DBox[{33, 36, 34}], 
+     Polygon3DBox[{10, 12, 33}], Polygon3DBox[{6, 38, 12}], 
+     Polygon3DBox[{35, 33, 38}], Polygon3DBox[{12, 38, 33}], 
+     Polygon3DBox[{30, 39, 40}], Polygon3DBox[{41, 42, 39}], 
+     Polygon3DBox[{37, 40, 42}], Polygon3DBox[{39, 42, 40}], 
+     Polygon3DBox[{37, 36, 40}], Polygon3DBox[{35, 43, 36}], 
+     Polygon3DBox[{30, 40, 43}], Polygon3DBox[{36, 43, 40}], 
+     Polygon3DBox[{30, 44, 45}], Polygon3DBox[{24, 46, 44}], 
+     Polygon3DBox[{47, 45, 46}], Polygon3DBox[{44, 46, 45}], 
+     Polygon3DBox[{30, 43, 31}], Polygon3DBox[{35, 38, 43}], 
+     Polygon3DBox[{6, 31, 38}], Polygon3DBox[{43, 38, 31}], 
+     Polygon3DBox[{48, 49, 50}], Polygon3DBox[{41, 51, 49}], 
+     Polygon3DBox[{47, 50, 51}], Polygon3DBox[{49, 51, 50}], 
+     Polygon3DBox[{52, 53, 54}], Polygon3DBox[{48, 50, 53}], 
+     Polygon3DBox[{47, 54, 50}], Polygon3DBox[{53, 50, 54}], 
+     Polygon3DBox[{47, 46, 54}], Polygon3DBox[{24, 55, 46}], 
+     Polygon3DBox[{52, 54, 55}], Polygon3DBox[{46, 55, 54}], 
+     Polygon3DBox[{47, 51, 45}], Polygon3DBox[{41, 39, 51}], 
+     Polygon3DBox[{30, 45, 39}], Polygon3DBox[{51, 39, 45}], 
+     Polygon3DBox[{24, 44, 25}], Polygon3DBox[{30, 32, 44}], 
+     Polygon3DBox[{18, 25, 32}], Polygon3DBox[{44, 32, 25}], 
+     Polygon3DBox[{17, 16, 56}], Polygon3DBox[{15, 57, 16}], 
+     Polygon3DBox[{58, 56, 57}], Polygon3DBox[{16, 57, 56}], 
+     Polygon3DBox[{59, 60, 61}], Polygon3DBox[{26, 62, 60}], 
+     Polygon3DBox[{17, 61, 62}], Polygon3DBox[{60, 62, 61}], 
+     Polygon3DBox[{63, 64, 65}], Polygon3DBox[{17, 56, 64}], 
+     Polygon3DBox[{58, 65, 56}], Polygon3DBox[{64, 56, 65}], 
+     Polygon3DBox[{26, 66, 27}], Polygon3DBox[{21, 23, 66}], 
+     Polygon3DBox[{18, 27, 23}], Polygon3DBox[{66, 23, 27}], 
+     Polygon3DBox[{59, 67, 60}], Polygon3DBox[{21, 66, 67}], 
+     Polygon3DBox[{26, 60, 66}], Polygon3DBox[{67, 66, 60}], 
+     Polygon3DBox[{17, 64, 61}], Polygon3DBox[{63, 68, 64}], 
+     Polygon3DBox[{59, 61, 68}], Polygon3DBox[{64, 68, 61}], 
+     Polygon3DBox[{17, 62, 14}], Polygon3DBox[{26, 28, 62}], 
+     Polygon3DBox[{9, 14, 28}], Polygon3DBox[{62, 28, 14}], 
+     Polygon3DBox[{59, 69, 70}], Polygon3DBox[{71, 72, 69}], 
+     Polygon3DBox[{73, 70, 72}], Polygon3DBox[{69, 72, 70}], 
+     Polygon3DBox[{71, 69, 74}], Polygon3DBox[{59, 68, 69}], 
+     Polygon3DBox[{63, 74, 68}], Polygon3DBox[{69, 68, 74}], 
+     Polygon3DBox[{75, 76, 77}], Polygon3DBox[{59, 70, 76}], 
+     Polygon3DBox[{73, 77, 70}], Polygon3DBox[{76, 70, 77}], 
+     Polygon3DBox[{78, 79, 80}], Polygon3DBox[{73, 72, 79}], 
+     Polygon3DBox[{71, 80, 72}], Polygon3DBox[{79, 72, 80}], 
+     Polygon3DBox[{21, 67, 81}], Polygon3DBox[{59, 76, 67}], 
+     Polygon3DBox[{75, 81, 76}], Polygon3DBox[{67, 76, 81}], 
+     Polygon3DBox[{82, 83, 84}], Polygon3DBox[{73, 79, 83}], 
+     Polygon3DBox[{78, 84, 79}], Polygon3DBox[{83, 79, 84}], 
+     Polygon3DBox[{85, 86, 87}], Polygon3DBox[{88, 89, 86}], 
+     Polygon3DBox[{52, 87, 89}], Polygon3DBox[{86, 89, 87}], 
+     Polygon3DBox[{88, 86, 90}], Polygon3DBox[{85, 91, 86}], 
+     Polygon3DBox[{75, 90, 91}], Polygon3DBox[{86, 91, 90}], 
+     Polygon3DBox[{52, 92, 53}], Polygon3DBox[{93, 94, 92}], 
+     Polygon3DBox[{48, 53, 94}], Polygon3DBox[{92, 94, 53}], 
+     Polygon3DBox[{93, 92, 95}], Polygon3DBox[{52, 89, 92}], 
+     Polygon3DBox[{88, 95, 89}], Polygon3DBox[{92, 89, 95}], 
+     Polygon3DBox[{88, 96, 95}], Polygon3DBox[{97, 98, 96}], 
+     Polygon3DBox[{93, 95, 98}], Polygon3DBox[{96, 98, 95}], 
+     Polygon3DBox[{52, 55, 87}], Polygon3DBox[{24, 99, 55}], 
+     Polygon3DBox[{85, 87, 99}], Polygon3DBox[{55, 99, 87}], 
+     Polygon3DBox[{75, 100, 101}], Polygon3DBox[{82, 102, 100}], 
+     Polygon3DBox[{103, 101, 102}], Polygon3DBox[{100, 102, 101}], 
+     Polygon3DBox[{82, 100, 83}], Polygon3DBox[{75, 77, 100}], 
+     Polygon3DBox[{73, 83, 77}], Polygon3DBox[{100, 77, 83}], 
+     Polygon3DBox[{97, 96, 104}], Polygon3DBox[{88, 105, 96}], 
+     Polygon3DBox[{103, 104, 105}], Polygon3DBox[{96, 105, 104}], 
+     Polygon3DBox[{103, 105, 101}], Polygon3DBox[{88, 90, 105}], 
+     Polygon3DBox[{75, 101, 90}], Polygon3DBox[{105, 90, 101}], 
+     Polygon3DBox[{85, 106, 91}], Polygon3DBox[{21, 81, 106}], 
+     Polygon3DBox[{75, 91, 81}], Polygon3DBox[{106, 81, 91}], 
+     Polygon3DBox[{85, 99, 106}], Polygon3DBox[{24, 22, 99}], 
+     Polygon3DBox[{21, 106, 22}], Polygon3DBox[{99, 22, 106}]}], 
+   {RGBColor[0, 0, 1], Opacity[0.2]}},
+  Boxed->False,
+  Lighting->"Neutral"]], "Output",
+ CellChangeTimes->{{3.952768349609305*^9, 3.952768361481285*^9}},
+ CellLabel->"Out[29]=",ExpressionUUID->"ea9b025d-7b74-4361-9c0e-0a33f3a879a1"]
+}, Open  ]]
+},
+WindowSize->{1799, 1307},
+WindowMargins->{{0, Automatic}, {Automatic, 0}},
+Magnification:>1.5 Inherited,
+FrontEndVersion->"14.2 for Mac OS X ARM (64-bit) (December 26, 2024)",
+StyleDefinitions->"Default.nb",
+ExpressionUUID->"2b9270dd-808c-42c3-bcf6-c100be9a520b"
+]
+(* End of Notebook Content *)
+
+(* Internal cache information *)
+(*CellTagsOutline
+CellTagsIndex->{}
+*)
+(*CellTagsIndex
+CellTagsIndex->{}
+*)
+(*NotebookFileOutline
+Notebook[{
+Cell[558, 20, 199, 3, 44, "Input",ExpressionUUID->"2523591a-c635-4f9b-b570-8aca9854b9b4"],
+Cell[760, 25, 375, 8, 74, "Input",ExpressionUUID->"57afa85b-f202-4ad9-b1d9-75408832ebf5"],
+Cell[CellGroupData[{
+Cell[1160, 37, 17104, 442, 2294, "Input",ExpressionUUID->"80d75143-028e-43cb-a5a9-8d3c638b2126"],
+Cell[18267, 481, 236, 4, 34, "Print",ExpressionUUID->"884ce308-5b6b-40ef-9936-82d0418a2a4f"],
+Cell[18506, 487, 19082, 362, 571, "Output",ExpressionUUID->"ea9b025d-7b74-4361-9c0e-0a33f3a879a1"]
+}, Open  ]]
+}
+]
+*)
+

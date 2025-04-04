@@ -67,7 +67,14 @@ Do[ (* iterate over edges e *)
 meanEdgeLength = totalLength/Length[mesh["edges"]]
 ```
 
-### Utility functions
+## Examples
+
+Examples can be found in the `examples/` subdirectory.
+
+- `LaplaceEquation.m` — solves a Laplace equation with Dirichlet boundary conditions, using the sparse cotan Laplacian.  This example shows how to do typical matrix-based geometry processing using the `HalfedgeMesh` library.   
+![example solution](examples/LaplaceEquation.jpg)
+
+### Library functions
 
 The HalfedgeMesh package also defines several utility functions.  Note that, in order to keep function invocation concise, most of these functions assume the existence of a halfedge mesh named `mesh` (as built by `BuildHalfedge`), and that the element helper functions have the same names as above (`twin, next, vertex, edge, face, he`).  They also assume that there is a list of vertex coordinates named `vertexCoordinates` (as built by `loadPolygonalOBJ`).
 
@@ -75,7 +82,11 @@ The HalfedgeMesh package also defines several utility functions.  Note that, in 
 
 - `position[v]` — Returns the coordinates of vertex `v`.  Note that, like the element helper functions, it is often convenient to call this function in postfix form, e.g., `e//he//vertex//position` gets the position of one of the endpoints of edge `e`.
 
-- `onBoundary[h]` — Returns a boolean indicating whether `h` is contained in the mesh boundary.
+- `isBoundaryVertex[v]` — Returns a boolean indicating whether `v` is contained in the mesh boundary.
+
+- `isBoundaryEdge[e]` — Returns a boolean indicating whether `e` is contained in the mesh boundary.
+
+- `isBoundaryHalfedge[h]` — Returns a boolean indicating whether `h` is contained in the mesh boundary.
 
 - `DrawHalfedgeMesh[]` — Draws the mesh in 3D.  Note that this function has not been carefully calibrated to draw meshes of different sizes, and may draw very small (or very large) widgets for vertices, edges, etc.
 
@@ -84,6 +95,10 @@ The HalfedgeMesh package also defines several utility functions.  Note that, in 
 - `TriangleArea[f]` — Returns the area of face `f`.  If `f` is a nonplanar polygon, returns the magnitude of the area vector (as computed by the shoelace formula).
 
 - `CornerAngle[h]` — Returns the interior angle at the head (not the tail) of halfedge h.
+
+- `HalfedgeCotan[h]` — Returns the cotangent of the interior angle opposite h within its triangle.
+
+- `EdgeCotan[e]` — Returns the sum of the cotangents for any non-boundary halfedge incident on `e`.
 
 - `{vertexCoordinates,polygons} = loadPolygonalOBJ[filename]` — This function loads a polygon mesh from a WavefrontOBJ file, returning vertex coordinates as a list `vertexCoordinates` of triples, and polygons as a list `polygons` of polygons, each of which is a list of 1-based indices into `vertexCoordinates`.  Note that Mathematica's built-in mesh loaders do not provide the original OBJ connectivity, since they either (i) triangulate all polygons (e.g., `Import["mesh.obj"]`) or (ii) provide only a polygon soup (e.g., `Import["mesh.obj",PolygonData]`).
 
